@@ -3,12 +3,11 @@ const socket = require('socket.io')
 const http = require('http');
 const { Chess } = require('chess.js')
 const path = require('path');
-const { log } = require('console');
 
 const app = express();
 
 const server = http.createServer(app);
-const io = socket(server);
+const io = socket(server); 
 
 const chess = new Chess();
 let player = {};
@@ -30,7 +29,7 @@ io.on("connection", function(uniquesocket){
         uniquesocket.emit("playerRole", "w");
     }
     else if(!player.black){
-        player.white = uniquesocket.id;
+        player.black = uniquesocket.id;
         uniquesocket.emit("playerRole", "b");
     }
     else{
@@ -56,12 +55,13 @@ io.on("connection", function(uniquesocket){
                 io.emit("move", move);
                 io.emit("boardState", chess.fen())
             }else{
-                console.log("Invalid move: ", move);
+                console.log("invalidMove: ", move);
                 uniquesocket.emit("invalidMove", move)                
             }
         } catch (err) {
             console.log(err);        
-            uniquesocket.emit("Invalid move: ",move);            
+            uniquesocket.emit("invalidMove", move);
+          
         }
     })
 
